@@ -173,7 +173,7 @@ For writing more complex configuration, Html2pdf bundles the following lua modul
 * `re`: [yuin/gluare](https://github.com/yuin/gluare)
 * `sh`:[otm/gluash](https://github.com/otm/gluash)
 
-For instance, you can generate PDF from markdown text. See the [example](_example/markdown/markdown.lua).
+For instance, you can generate PDF from markdown text. See the [example](_example).
 
 ### DSL Syntax
 
