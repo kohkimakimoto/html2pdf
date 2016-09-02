@@ -15,6 +15,7 @@ Table of Contents
   * [Change Output File](#change-output-file)
   * [Add Cover](#add-cover)
   * [Options](#options)
+  * [Variables](#variables)
   * [Write Complex Config](#write-complex-config)
   * [DSL Syntax](dsl-syntax)
 * [Developing Html2pdf](developing-html2pdf)
@@ -134,6 +135,29 @@ example.options = {
 ```
 
 See also: [wkhtmltopdf docs](http://wkhtmltopdf.org/docs.html)
+
+#### Variables
+
+You can input variables to a config by `-var` and `-var-file` option.
+The variables can be read in a config by `var` global variable.
+
+Example: create `example.lua`.
+
+```lua
+local html2pdf = require "html2pdf"
+
+local example = html2pdf.pdf "example.pdf"
+example.output_file = var.output_file
+example.pages = {
+    input = "https://github.com/kohkimakimoto/html2pdf"
+}
+```
+
+Run html2pdf with `-var`.
+
+```
+$ html2pdf example.lua -var='{"output_file": "foo.pdf"}'
+```
 
 ### Write Complex Config
 
