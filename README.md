@@ -136,7 +136,7 @@ example.options = {
 
 See also: [wkhtmltopdf docs](http://wkhtmltopdf.org/docs.html)
 
-#### Variables
+### Variables
 
 You can input variables to a config by `-var` and `-var-file` option.
 The variables can be read in a config by `var` global variable.
