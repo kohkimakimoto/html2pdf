@@ -1,0 +1,17 @@
+.DS_Store
+Thumbs.db
+.tags*
+._*
+*.iml
+/vendor
+.vagrant
+
+/_work
+
+/_build/dev/*
+/_build/dist/*
+
+/resource/bindata_*
+*.pdf
+
+!.gitkeep
