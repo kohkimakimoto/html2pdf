@@ -239,8 +239,7 @@ $ make dist
 ## TODO
 
 * support windows
-* support page options
-* support TOC
+* support full wkhtmltopdf options (now, It doesn't implement all options.)
 
 ## Author
 
