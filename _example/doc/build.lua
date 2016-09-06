@@ -34,7 +34,6 @@ local tmpl = [=[
         color: #222222;
     }
     .cover p {font-size: 68%;}
-
 </style>
 </head>
 <body>
@@ -56,6 +55,20 @@ local cover = [[
 <p class="center">A CLI tool for generating PDF from HTML by using Lua script.</p>
 <p class="center">kohki.makimoto@gmail.com</p>
 ]]
+
+local toc_style = [[
+li {
+    display: block;
+    font-size: 60%;
+    padding: 3px 0;
+    margin-bottom: 5px;
+}
+li a {
+    display: inline-block;
+    padding-bottom: 3px;
+}
+]]
+
 local cover_content = template.dostring(tmpl, {content = cover, cover = true})
 
 local pages = {}
@@ -70,10 +83,10 @@ end)
 
 local doc = html2pdf.pdf "doc.pdf"
 doc.output_file = project_dir .. "/doc.pdf"
--- doc.toc = true
--- doc.toc_options = {
---     toc_header_text = "*** Table of Content ***",
--- }
+doc.toc = {
+    toc_header_text = "Table of Content",
+    user_style_sheet_content = toc_style,
+}
 doc.options = {
     page_size = "A4",
     margin_left = 10,

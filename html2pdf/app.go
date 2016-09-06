@@ -135,7 +135,7 @@ func (app *App) LoadScriptFile(recipeFile string) error {
 }
 
 // see also http://stackoverflow.com/questions/5776125/wkhtmltopdf-command-fails
-func (app *App) SendContentToTempHTMLfile(content []byte) (string, error) {
+func (app *App) CreateTempHTMLfileByContent(content []byte) (string, error) {
 	tmpFile, err := ioutil.TempFile(app.CacheTmpdir, "")
 	if err != nil {
 		return "", err
@@ -167,13 +167,36 @@ func (app *App) SendContentToTempHTMLfile(content []byte) (string, error) {
 	return name2, nil
 }
 
-func (app *App) SendFileToTempHTMLfile(file string) (string, error) {
-	content, err := ioutil.ReadFile(file)
+func (app *App) CreateTempCSSfileByContent(content []byte) (string, error) {
+	tmpFile, err := ioutil.TempFile(app.CacheTmpdir, "")
+	if err != nil {
+		return "", err
+	}
+	defer tmpFile.Close()
+
+	_, err = tmpFile.Write(content)
 	if err != nil {
 		return "", err
 	}
 
-	return app.SendContentToTempHTMLfile(content)
+	err = tmpFile.Chmod(0600)
+	if err != nil {
+		return "", err
+	}
+
+	name := tmpFile.Name()
+	name2 := name + ".css"
+	if err := os.Rename(name, name2); err != nil {
+		return "", err
+	}
+
+	if loglv.IsDebug() {
+		log.Printf("    (Debug) Created tmpfile: %s", name2)
+	}
+
+	app.Tmpfiles = append(app.Tmpfiles, name2)
+
+	return name2, nil
 }
 
 func (app *App) Run() error {

@@ -122,9 +122,8 @@ example.cover = {
 ### Add TOC
 
 ```lua
-example.toc = true
-example.toc_options = {
-    toc_header_text = "*** Table of Content ***",
+example.toc = {
+    toc_header_text = "Table of Content",
 }
 ```
 
