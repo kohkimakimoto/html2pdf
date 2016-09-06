@@ -16,6 +16,8 @@ type TargetPdf struct {
 	LValues map[string]lua.LValue
 	App     *App
 	Options *PdfOptions
+	TOC     bool
+	TOCOptions *TOCOptions
 }
 
 func NewTargetPdf(name string, app *App) *TargetPdf {
@@ -24,6 +26,8 @@ func NewTargetPdf(name string, app *App) *TargetPdf {
 		LValues: map[string]lua.LValue{},
 		App:     app,
 		Options: &PdfOptions{},
+		TOC: false,
+		TOCOptions: &TOCOptions{},
 	}
 }
 
@@ -37,6 +41,7 @@ func (tp *TargetPdf) Run() error {
 		return err
 	}
 
+	// parse options
 	if options, ok := tp.LValues["options"]; ok {
 		if opttb, ok := options.(*lua.LTable); ok {
 			if err := gluamapper.Map(opttb, tp.Options); err != nil {
@@ -45,7 +50,22 @@ func (tp *TargetPdf) Run() error {
 		}
 	}
 
-	// setup gloabal options
+	// parse toc options
+	if toc, ok := tp.LValues["toc"]; ok {
+		if tocbool, ok := toc.(lua.LBool); ok {
+			tp.TOC = bool(tocbool)
+		}
+	}
+
+	if tocOptions, ok := tp.LValues["toc_options"]; ok {
+		if opttb, ok := tocOptions.(*lua.LTable); ok {
+			if err := gluamapper.Map(opttb, tp.TOCOptions); err != nil {
+				return err
+			}
+		}
+	}
+
+	// gloabal options
 	if tp.Options.CookieJar != "" {
 		pdfg.CookieJar.Set(tp.Options.CookieJar)
 	}
@@ -101,6 +121,14 @@ func (tp *TargetPdf) Run() error {
 		pdfg.Title.Set(tp.Options.Title)
 	}
 
+	// outline options
+	if tp.Options.NoOutline {
+		pdfg.NoOutline.Set(tp.Options.NoOutline)
+	}
+	if tp.Options.OutlineDepth != "" {
+		pdfg.OutlineDepth.Set(parseUint(tp.Options.OutlineDepth))
+	}
+
 	// add cover
 	cover, err := tp.Cover()
 	if err != nil {
@@ -119,6 +147,23 @@ func (tp *TargetPdf) Run() error {
 		for _, p := range pages {
 			page := wkhtmltopdf.NewPage(p.InputFile())
 			pdfg.AddPage(page)
+		}
+	}
+
+	// add TOC
+	if tp.TOC {
+		pdfg.TOC.Include = true
+		if tp.TOCOptions.DisableDottedLines {
+			pdfg.TOC.DisableDottedLines.Set(tp.TOCOptions.DisableDottedLines)
+		}
+		if tp.TOCOptions.DisableTocLinks {
+			pdfg.TOC.DisableTocLinks.Set(tp.TOCOptions.DisableTocLinks)
+		}
+		if tp.TOCOptions.TocHeaderText != ""{
+			pdfg.TOC.TocHeaderText.Set(tp.TOCOptions.TocHeaderText)
+		}
+		if tp.TOCOptions.TocLevelIndentation != ""{
+			pdfg.TOC.TocLevelIndentation.Set(parseUint(tp.TOCOptions.TocLevelIndentation))
 		}
 	}
 
@@ -306,6 +351,21 @@ type PdfOptions struct {
 //	Readme            bool   // Output program readme
 	Title             string // The title of the generated pdf file (The title of the first document is used if not specified)
 //	Version           bool   // Output version information and exit
+
+	// outlineOptions
+
+	NoOutline         bool   //Do not put an outline into the pdf
+	OutlineDepth      string   // (actually uint) Set the depth of the outline (default 4)
+}
+
+type TOCOptions struct {
+	DisableDottedLines  bool   //Do not use dotted lines in the toc
+	TocHeaderText       string //The header text of the toc (default Table of Contents)
+	TocLevelIndentation string   // (actually uint) For each level of headings in the toc indent by this length (default 1em)
+	DisableTocLinks     bool   //Do not link from toc to sections
+	// TODO: suppot following options
+	// TocTextSizeShrink   floatOption  //For each level of headings in the toc the font is scaled by this factor
+	// XslStyleSheet       string //Use the supplied xsl style sheet for printing the table of content
 }
 
 func parseUint(str string) uint {
