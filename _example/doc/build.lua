@@ -70,10 +70,10 @@ end)
 
 local doc = html2pdf.pdf "doc.pdf"
 doc.output_file = project_dir .. "/doc.pdf"
-doc.toc = true
-doc.toc_options = {
-    toc_header_text = "*** Table of Content ***",
-}
+-- doc.toc = true
+-- doc.toc_options = {
+--     toc_header_text = "*** Table of Content ***",
+-- }
 doc.options = {
     page_size = "A4",
     margin_left = 10,
