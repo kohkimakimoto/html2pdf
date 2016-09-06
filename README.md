@@ -14,6 +14,7 @@ Table of Contents
   * [Multiple Pages](#multiple-pages)
   * [Change Output File](#change-output-file)
   * [Add Cover](#add-cover)
+  * [Add TOC](#add-toc)
   * [Options](#options)
   * [Variables](#variables)
   * [Write Complex Config](#write-complex-config)
