@@ -290,7 +290,7 @@ func (tp *TargetPdf) TOC() (*TOC, error) {
 
 	ret := &TOC{}
 	ret.targetPdf = tp
-	
+
 	maxn := tocTb.MaxN()
 	if maxn == 0 { // table
 		if err := gluamapper.Map(tocTb, ret); err != nil {

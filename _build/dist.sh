@@ -43,7 +43,7 @@ rm -rf _build/dist/*
 
 echo "--> Building..."
 gox \
-    -os="linux darwin" \
+    -os="linux darwin windows" \
     -arch="amd64" \
     -ldflags=" -w \
         -X github.com/kohkimakimoto/$PRODUCT_NAME/$PRODUCT_NAME.CommitHash=$COMMIT_HASH \
@@ -59,8 +59,8 @@ echo "Packaging darwin binaries" | indent
 mv ${PRODUCT_NAME}_darwin_amd64 ${PRODUCT_NAME} && zip ${PRODUCT_NAME}_darwin_amd64.zip ${PRODUCT_NAME}  | indent && rm ${PRODUCT_NAME}
 echo "Packaging linux binaries" | indent
 mv ${PRODUCT_NAME}_linux_amd64 ${PRODUCT_NAME} && zip ${PRODUCT_NAME}_linux_amd64.zip ${PRODUCT_NAME}  | indent && rm ${PRODUCT_NAME}
-# echo "Packaging windows binaries" | indent
-# mv ${PRODUCT_NAME}_windows_amd64.exe ${PRODUCT_NAME}.exe && zip ${PRODUCT_NAME}_windows_amd64.zip ${PRODUCT_NAME}.exe | indent && rm ${PRODUCT_NAME}.exe
+ echo "Packaging windows binaries" | indent
+ mv ${PRODUCT_NAME}_windows_amd64.exe ${PRODUCT_NAME}.exe && zip ${PRODUCT_NAME}_windows_amd64.zip ${PRODUCT_NAME}.exe | indent && rm ${PRODUCT_NAME}.exe
 
 cd "../.."
 
